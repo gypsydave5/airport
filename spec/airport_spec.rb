@@ -11,13 +11,23 @@ describe Airport do
   let(:airport) { Airport.new }
 	let(:plane) { double :plane }
 
+			def sunny_weather
+				allow(Weather).to receive(:conditions).and_return("sunny")
+			end
+
+			def stormy_weather
+				allow(Weather).to receive(:conditions).and_return("stormy")
+			end
+
   context 'taking off and landing' do
 
     it 'a plane can land' do
+			sunny_weather
 			expect(airport.land(plane)).to eq nil
     end
 
     it 'a plane can take off' do
+			sunny_weather
 			expect(airport.take_off(plane)).to eq nil
     end
   end
@@ -32,14 +42,16 @@ describe Airport do
 		end
 
 		it 'knows when the airport is full' do
+			sunny_weather
 			airport = full_airport
 			expect(airport.full?).to be true
 		end
 
-    xit 'a plane cannot land if the airport is full' do
+    it 'a plane cannot land if the airport is full' do
+			sunny_weather
 			airport = full_airport
+			expect{airport.land(plane)}.to raise_error(StandardError, "Airport is full - please do not land!")
 		end
-
 
     # Include a weather condition using a module.
     # The weather must be random and only have two states "sunny" or "stormy".
@@ -48,11 +60,20 @@ describe Airport do
     # This will require stubbing to stop the random return of the weather.
     # If the airport has a weather condition of stormy,
     # the plane can not land, and must not be in the airport
+
     context 'weather conditions' do
+			def stormy_weather
+				allow(Weather).to receive(:conditions).and_return("stormy")
+			end
+
       it 'a plane cannot take off when there is a storm brewing' do
+				stormy_weather
+				expect{airport.land(plane)}.to raise_error(StandardError, "Weather conditions at Airport unsuitable for landing.")
       end
 
       it 'a plane cannot land in the middle of a storm' do
+				stormy_weather
+				expect{airport.take_off(plane)}.to raise_error(StandardError, "Weather conditions at Airport unsuitable for take-off.")
       end
     end
   end
