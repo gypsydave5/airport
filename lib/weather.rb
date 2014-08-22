@@ -1,5 +1,5 @@
 module Weather
-	def conditions
-		["sunny", "stormy"].shuffle[0]
+	def self.conditions
+		["sunny", "stormy"].sample
 	end
 end

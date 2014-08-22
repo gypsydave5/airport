@@ -12,14 +12,15 @@ class Airport
 	end
 
 	def land plane
-		raise StandardError, "Airport is full - please do not land!" if full?
-		raise StandardError, "Weather conditions at Airport unsuitable for landing." if Weather::conditions == "stormy"
-		raise ArgumentError, "This plane has already landed!" if @hanger.include?(plane)
+		p Weather::conditions
+		do_not_land("we're full") if full?
+		do_not_land("the weather's bad") if Weather::conditions == "stormy"
+		do_not_land("you're already here!") if @hanger.include?(plane)
 		@hanger << plane
 	end
 
 	def take_off plane
-		raise StandardError, "Weather conditions at Airport unsuitable for take-off." if Weather::conditions == "stormy"
+		raise StandardError, "the weather's bad" if Weather::conditions == "stormy"
 		raise ArgumentError, "This plane is not currently at the Airport" unless @hanger.include?(plane)
 		@hanger.delete(plane)
 	end
@@ -30,6 +31,11 @@ class Airport
 
 	def to_s
 		@name
+	end
+
+	def do_not_land(reason)
+		raise(ArgumentError, reason) if reason == "you're already here!"
+		raise StandardError, reason
 	end
 
 end

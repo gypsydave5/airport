@@ -1,5 +1,4 @@
 require 'airport'
-require 'plane'
 
 # A plane currently in the airport can be requested to take off.
 #
@@ -29,7 +28,7 @@ describe Airport do
 		it 'a plane cannnot land if it is already at the airport' do
 			sunny_weather
 			airport.land(plane)
-			expect{airport.land(plane)}.to raise_error(ArgumentError, "This plane has already landed!")
+			expect{airport.land(plane)}.to raise_error(ArgumentError, "you're already here!")
 		end
 
     it 'a plane can take off' do
@@ -64,7 +63,7 @@ describe Airport do
     it 'a plane cannot land if the airport is full' do
 			sunny_weather
 			airport = full_airport
-			expect{airport.land(plane)}.to raise_error(StandardError, "Airport is full - please do not land!")
+			expect{airport.land(plane)}.to raise_error(StandardError, "we're full")
 		end
 
     # Include a weather condition using a module.
@@ -82,12 +81,12 @@ describe Airport do
 
       it 'a plane cannot take off when there is a storm brewing' do
 				stormy_weather
-				expect{airport.land(plane)}.to raise_error(StandardError, "Weather conditions at Airport unsuitable for landing.")
+				expect{airport.land(plane)}.to raise_error(StandardError, "the weather's bad")
       end
 
       it 'a plane cannot land in the middle of a storm' do
 				stormy_weather
-				expect{airport.take_off(plane)}.to raise_error(StandardError, "Weather conditions at Airport unsuitable for take-off.")
+				expect{airport.take_off(plane)}.to raise_error(StandardError, "the weather's bad")
       end
     end
   end
@@ -98,31 +97,3 @@ end
 # When we land a plane at the airport, the plane in question should have its status changed to "landed"
 #
 # When the plane takes of from the airport, the plane's status should become "flying"
-describe Plane do
-
-  let(:plane) { Plane.new }
-
-  it 'has a flying status when created' do
-		expect(plane.status).to eq :flying
-  end
-
-  it 'has a flying status when in the air' do
-  end
-
-  it 'can take off' do
-  end
-
-  it 'changes its status to flying after taking of' do
-  end
-end
-
-# grand final
-# Given 6 planes, each plane must land. When the airport is full, every plane must take off again.
-# Be careful of the weather, it could be stormy!
-# Check when all the planes have landed that they have the right status "landed"
-# Once all the planes are in the air again, check that they have the status of flying!
-#
-describe "The gand finale (last spec)" do
-  it 'all planes can land and all planes can take off' do
-  end
-end
