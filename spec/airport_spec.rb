@@ -23,21 +23,35 @@ describe Airport do
 
     it 'a plane can land' do
 			sunny_weather
-			expect(airport.land(plane)).to eq nil
+			expect(airport.land(plane)).to eq airport.hanger
     end
+
+		it 'a plane cannnot land if it is already at the airport' do
+			sunny_weather
+			airport.land(plane)
+			expect{airport.land(plane)}.to raise_error(ArgumentError, "This plane has already landed!")
+		end
 
     it 'a plane can take off' do
 			sunny_weather
-			expect(airport.take_off(plane)).to eq nil
+			airport.land(plane)
+			expect(airport.take_off(plane)).to eq plane
     end
+
+		it 'a place cannot take off if it is not at the airport' do
+			sunny_weather
+			expect{airport.take_off(plane)}.to raise_error(ArgumentError, "This plane is not currently at the Airport")
+		end
   end
 
   context 'traffic control' do
 
 		def full_airport
 			capacity_two_airport = Airport.new(capacity: 2)
-			capacity_two_airport.land(plane)
-			capacity_two_airport.land(plane)
+			sopwith_camel = double :sopwith_camel
+			se_five_a = double :se_five_a
+			capacity_two_airport.land(sopwith_camel)
+			capacity_two_airport.land(se_five_a)
 			return capacity_two_airport
 		end
 
@@ -89,6 +103,7 @@ describe Plane do
   let(:plane) { Plane.new }
 
   it 'has a flying status when created' do
+		expect(plane.status).to eq :flying
   end
 
   it 'has a flying status when in the air' do
@@ -106,6 +121,7 @@ end
 # Be careful of the weather, it could be stormy!
 # Check when all the planes have landed that they have the right status "landed"
 # Once all the planes are in the air again, check that they have the status of flying!
+#
 describe "The gand finale (last spec)" do
   it 'all planes can land and all planes can take off' do
   end
