@@ -1,11 +1,29 @@
-# grand final
-# Given 6 planes, each plane must land. When the airport is full, every plane must take off again.
-# Be careful of the weather, it could be stormy!
-# Check when all the planes have landed that they have the right status "landed"
-# Once all the planes are in the air again, check that they have the status of flying!
-#
+require 'airport'
+require 'plane'
+
 describe "The grand finale (last spec)" do
-  it 'all planes can land and all planes can take off' do
-		corsair = Plane.new
-  end
+
+	def sunny_weather
+		allow(Weather).to receive(:conditions).and_return("sunny")
+	end
+
+	it 'all planes can land and all planes can take off' do
+		sunny_weather
+		planes = []
+		planes << corsair = Plane.new
+		planes << thunderbird_one = Plane.new
+		planes << concorde = Plane.new
+		planes << jimbo = Plane.new
+		planes << spruce_goose = Plane.new
+		planes << tiger_moth = Plane.new
+
+		airport = Airport.new
+
+		planes.each {|plane| airport.land(plane)}
+		expect(airport.hanger).to eq planes
+		expect(planes.all?(&:landed?)).to be true
+		planes.each {|plane| airport.take_off(plane)}
+		expect(planes.all?(&:flying?)).to be true
+	end
+
 end

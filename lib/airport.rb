@@ -2,26 +2,25 @@ require 'weather'
 
 class Airport
 
-	attr_reader :hanger
+	attr_accessor :hanger
 
 	include Weather
 
-	def initialize(capacity: 200, name: "This")
+	def initialize capacity: 200, name: "the airport"
 		@capacity = capacity
 		@hanger = []
+		@name = name
 	end
 
 	def land plane
-		p Weather::conditions
-		do_not_land("we're full") if full?
-		do_not_land("the weather's bad") if Weather::conditions == "stormy"
-		do_not_land("you're already here!") if @hanger.include?(plane)
+		landing_safety_checks_for plane
+		plane.land
 		@hanger << plane
 	end
 
 	def take_off plane
-		raise StandardError, "the weather's bad" if Weather::conditions == "stormy"
-		raise ArgumentError, "This plane is not currently at the Airport" unless @hanger.include?(plane)
+		take_off_safety_checks_for plane
+		plane.take_off
 		@hanger.delete(plane)
 	end
 
@@ -33,9 +32,19 @@ class Airport
 		@name
 	end
 
-	def do_not_land(reason)
-		raise(ArgumentError, reason) if reason == "you're already here!"
+	def do_not_land_because reason
 		raise StandardError, reason
+	end
+
+	def landing_safety_checks_for plane
+		raise Weather::Warning if Weather::stormy?
+		raise StandardError, "#{self} is full" if full?
+		raise StandardError, "you're not even flying!" if plane.landed?
+	end
+
+	def take_off_safety_checks_for plane
+		raise Weather::Warning if Weather::stormy?
+		raise ArgumentError, "That plane is not currently at #{self}" unless @hanger.include?(plane)
 	end
 
 end

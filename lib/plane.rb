@@ -18,4 +18,12 @@ class Plane
 		self
 	end
 
+	def landed?
+		@status == :landed
+	end
+
+	def flying?
+		@status == :flying
+	end
+
 end

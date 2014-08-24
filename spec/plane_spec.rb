@@ -1,4 +1,5 @@
 require 'plane'
+require 'weather_spec'
 
 # When we create a new plane, it should have a "flying" status, thus planes can not be created in the airport.
 #
@@ -6,6 +7,8 @@ require 'plane'
 #
 # When the plane takes of from the airport, the plane's status should become "flying"
 describe Plane do
+
+	it_behaves_like 'a weather forecast'
 
   let(:plane) { Plane.new }
 
@@ -18,7 +21,7 @@ describe Plane do
   end
 
   it 'changes its status to flying after taking off' do
-		expect(plane.take_off.status).to be :flying
+		expect(plane.flying?).to be true
   end
 
   it 'can land' do
@@ -26,7 +29,8 @@ describe Plane do
   end
 
   it 'changes its status to landed after landing' do
-		expect(plane.land.status).to be :landed
+		plane.land
+		expect(plane.landed?).to be true
   end
 
 end
