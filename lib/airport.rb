@@ -2,7 +2,7 @@ require 'weather'
 
 class Airport
 
-	attr_accessor :hanger
+	attr_accessor :hanger, :capacity
 
 	include Weather
 
@@ -13,13 +13,13 @@ class Airport
 	end
 
 	def land plane
-		landing_safety_checks_for plane
+		landing_safety_check_for plane
 		plane.land
 		@hanger << plane
 	end
 
 	def take_off plane
-		take_off_safety_checks_for plane
+		take_off_safety_check_for plane
 		plane.take_off
 		@hanger.delete(plane)
 	end
@@ -32,19 +32,21 @@ class Airport
 		@name
 	end
 
-	def do_not_land_because reason
-		raise StandardError, reason
+	def landing_safety_check_for plane
+		raise Weather::Warning if Weather::stormy?
+		raise Airport::Full, "#{self} is full" if full?
+		raise Airport::PlaneMissing, "#{plane} not flying!" if plane.landed?
 	end
 
-	def landing_safety_checks_for plane
+	def take_off_safety_check_for plane
 		raise Weather::Warning if Weather::stormy?
-		raise StandardError, "#{self} is full" if full?
-		raise StandardError, "you're not even flying!" if plane.landed?
+		raise Airport::PlaneMissing, "That plane is not currently at #{self}" unless @hanger.include?(plane)
 	end
 
-	def take_off_safety_checks_for plane
-		raise Weather::Warning if Weather::stormy?
-		raise ArgumentError, "That plane is not currently at #{self}" unless @hanger.include?(plane)
+	class Full < StandardError
+	end
+
+	class PlaneMissing < StandardError
 	end
 
 end

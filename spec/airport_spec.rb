@@ -25,7 +25,7 @@ describe Airport do
 
 		it 'a plane cannnot land if it is already landed' do
 			sunny_weather
-			expect{airport.land(landed_plane)}.to raise_error(StandardError, "you're not even flying!")
+			expect{airport.land(landed_plane)}.to raise_error(Airport::PlaneMissing, "#{landed_plane} not flying!")
 		end
 
 		it 'sets the status of the plane to landed when it lands' do
@@ -42,7 +42,7 @@ describe Airport do
 
 		it 'a plane cannot take off if it is not at the airport' do
 			sunny_weather
-			expect{airport.take_off(plane)}.to raise_error(ArgumentError, "That plane is not currently at the airport")
+			expect{airport.take_off(plane)}.to raise_error(Airport::PlaneMissing, "That plane is not currently at the airport")
 		end
 
 		it 'sets the status of the plane to flying when it takes-off' do
@@ -57,12 +57,9 @@ describe Airport do
   context 'traffic control' do
 
 		def full_airport
-			capacity_two_airport = Airport.new(capacity: 2)
-			sopwith_camel = double :sopwith_camel, landed?: true
-			se_five_a = double :se_five_a, landed?: true
-			capacity_two_airport.hanger << sopwith_camel
-			capacity_two_airport.hanger << se_five_a
-			return capacity_two_airport
+			airport = Airport.new(capacity: 2)
+			airport.capacity.times {airport.land(plane)}
+			return airport
 		end
 
 		it 'knows when the airport is full' do
@@ -74,7 +71,7 @@ describe Airport do
     it 'a plane cannot land if the airport is full' do
 			sunny_weather
 			airport = full_airport
-			expect{airport.land(plane)}.to raise_error(StandardError, "the airport is full")
+			expect{airport.land(plane)}.to raise_error(Airport::Full, "the airport is full")
 		end
 
     context 'weather conditions' do
