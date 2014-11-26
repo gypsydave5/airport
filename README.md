@@ -1,5 +1,5 @@
-AIRPORT!
-========
+AIRPORT
+=======
 
 
 As the Week 3 challenge at [Makers Academy](http://www.makersacademy.com/) we
